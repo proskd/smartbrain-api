@@ -1,0 +1,28 @@
+{
+  "name": "smartbrain-api",
+  "version": "1.0.0",
+  "description": "api for the smart brain app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/proskd/smartbrain-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/proskd/smartbrain-api/issues"
+  },
+  "homepage": "https://github.com/proskd/smartbrain-api#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}
