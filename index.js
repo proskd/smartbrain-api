@@ -47,11 +47,13 @@ app.post("/signin", (req, res) => {
     })
 
     if (found) {
-        let {id, name, email} = foundUser;
+        let {id, name, email, entries, joined} = foundUser;
         let resUser = {
             id: id,
             name: name, 
-            email: email
+            email: email,
+            entries: entries,
+            joined: joined
         }
         res.json(resUser);
     } else {
