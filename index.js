@@ -3,6 +3,8 @@ const bodyparse = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
+const register = require('./controllers/register.js');
+const signin = require('./controllers/signin.js');
 const app = express();
 
 const db = knex({
@@ -29,60 +31,8 @@ app.get("/", (req, res) => {
     })
 })
 
-app.post("/signin", (req, res) => {
-    const {email, password} = req.body;
-    
-    db.select('email', 'hash').from('login')
-        .where({
-            email: email
-        })
-        .then((data) => {
-            loginInfo = data[0];
-            const isValid = bcrypt.compareSync(password, loginInfo.hash);
-            if (isValid) {
-                return db.select('*').from('users').where({
-                    email: email
-                }).then(user => {
-                    res.json(user[0]);
-                }).catch(error => {
-                    res.status(400).json('invalid username or password');
-                })
-            } else {
-                res.status(400).json('invalid username or password');
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(400).json('invalid username or password')
-        });
-});
-
-app.post("/register", (req, res) => {
-    const {email, password, name} = req.body;
-    const hash = bcrypt.hashSync(password);
-
-    db.transaction((trx) => {
-        trx.insert({
-            hash: hash,
-            email: email
-        }).into('login')
-        .returning('email')
-        .then(loginEmail => {
-            console.log("inserted into login", loginEmail);
-            return trx('users')
-            .returning('*')
-            .insert({
-                email: loginEmail[0],
-                name: name,
-                joined: new Date()
-            }).then(user => {
-                res.json(user[0]);
-            })
-        })
-        .then(trx.commit)
-        .catch(trx.rollback)
-    }).catch(err => res.status(400).json('Something went wrong'))
-});
+app.post("/signin", (req, res) => {signin.handleSignin(req, res, db, bcrypt)});
+app.post("/register", (req, res) => {register.handleRegister(req, res, db, bcrypt)});
 
 app.get('/profile/:id', (req, res) => {
     const {id} = req.params;
