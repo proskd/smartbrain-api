@@ -5,6 +5,8 @@ const cors = require('cors');
 const knex = require('knex');
 const register = require('./controllers/register.js');
 const signin = require('./controllers/signin.js');
+const profile = require('./controllers/profile.js');
+const image = require('./controllers/image.js');
 const app = express();
 
 const db = knex({
@@ -33,24 +35,8 @@ app.get("/", (req, res) => {
 
 app.post("/signin", (req, res) => {signin.handleSignin(req, res, db, bcrypt)});
 app.post("/register", (req, res) => {register.handleRegister(req, res, db, bcrypt)});
-
-app.get('/profile/:id', (req, res) => {
-    const {id} = req.params;
-
-    db.select('*').from('users').where({id: id}).then(user => {
-        found = true;
-        res.json(user[0]);
-    }).catch(error => res.status(400).json("not found"));
-});
-
-app.put('/image', (req, res) => {
-    const {id} = req.body;
-
-    db('users').where({id: id}).increment('entries', 1).returning('entries')
-        .then(entries => {
-            res.json(entries);            
-        }).catch(error => res.status(400).json("error updating user"));
-});
+app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db)});
+app.put('/image', (req, res) => {image.handleImageUpdate(req, res, db)});
 
 app.listen(3001, () => {
     console.log("app is running");
