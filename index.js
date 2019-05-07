@@ -3,24 +3,18 @@ const bodyparse = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
+
 const {check} = require('express-validator/check');
 
 const register = require('./controllers/register.js');
 const signin = require('./controllers/signin.js');
 const profile = require('./controllers/profile.js');
 const image = require('./controllers/image.js');
+const config = require('./config.js');
 
 const app = express();
 
-const db = knex({
-    client: 'pg',
-    connection: {
-      host : '127.0.0.1',
-      user : 'proskd',
-      password : '',
-      database : 'smart-brain'
-    }
-});
+const db = knex(config.getDBConfig(process.env.SERVER_ENV || 'dev'));
 
 app.use(bodyparse.json());
 app.use(cors());
