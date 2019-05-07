@@ -26,14 +26,7 @@ app.use(bodyparse.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
-    db('users').select('*')
-    .then(data => {
-        res.json(data);
-    })
-    .catch(err => {
-        console.log("index", err);
-        res.status(400).json('something went wrong');
-    })
+    res.json("I'm alive.");
 })
 
 app.post("/signin", [
