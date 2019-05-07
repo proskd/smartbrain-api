@@ -14,6 +14,7 @@ const config = require('./config.js');
 
 const app = express();
 
+console.log(`loading db with config ${process.env.SERVER_ENV}`);
 const db = knex(config.getDBConfig(process.env.SERVER_ENV || 'dev'));
 
 app.use(bodyparse.json());
