@@ -3,10 +3,8 @@ const getDBConfig = (env) => {
         return {
             client: 'pg',
             connection: {
-                host : '127.0.0.1',
-                user : 'proskd',
-                password : '',
-                database : 'smart-brain'
+                connectionString: process.env.DATABASE_URL,
+                ssl: true,
             }
         }
     } else if (env === 'dev') {
