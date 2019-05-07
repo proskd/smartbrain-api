@@ -3,6 +3,7 @@ const bodyparse = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
+const {check} = require('express-validator/check');
 
 const register = require('./controllers/register.js');
 const signin = require('./controllers/signin.js');
@@ -35,12 +36,24 @@ app.get("/", (req, res) => {
     })
 })
 
-app.post("/signin", (req, res) => {signin.handleSignin(req, res, db, bcrypt)});
-app.post("/register", (req, res) => {register.handleRegister(req, res, db, bcrypt)});
+app.post("/signin", [
+    check('email').isEmail(),
+    check('password').isLength({min: 1})
+],
+  (req, res) => {signin.handleSignin(req, res, db, bcrypt)});
+
+app.post("/register", [
+    check('email').isEmail(),
+    check('password').isLength({min: 1}),
+    check('name').isLength({min: 1})
+],
+(req, res) => {register.handleRegister(req, res, db, bcrypt)});
 app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db)});
 app.put('/image', (req, res) => {image.handleImageUpdate(req, res, db)});
 app.post('/image', image.handleApiCall);
 
-app.listen(3001, () => {
-    console.log("app is running");
+const port = process.env.PORT || 3001;
+
+app.listen(port, () => {
+    console.log(`app is running on ${port}`);
 })
